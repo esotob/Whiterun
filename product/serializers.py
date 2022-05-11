@@ -1,4 +1,5 @@
 from contextlib import nullcontext
+from itertools import product
 from product import models
 from.models import Product
 from rest_framework import serializers
@@ -11,6 +12,15 @@ class ProductSerializer(serializers.Serializer):
     item_cost = serializers.FloatField(required=True)
     item_pic = serializers.CharField(required=False)
     is_virtual = serializers.BooleanField(required=True)
+
+    def create(self, validated_data):
+        return Product.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.item_description = validated_data.get('item_description', instance.item_description)
+        instance.save()
+        return instance
+
 
     class Meta:
         model = Product
