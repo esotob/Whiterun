@@ -24,7 +24,9 @@ class ProductSku(models.Model):
         ('XXL', 'Extra extra Large'),
     )
     size_code= models.CharField(max_length=3, choices=size)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.ForeignKey(
+        Product, related_name='skus', on_delete=models.PROTECT
+        )
     color_code = models.CharField(max_length=3)
     color_code_desc = models.CharField(max_length=100)
     backordereable = models.BooleanField(default=True)
