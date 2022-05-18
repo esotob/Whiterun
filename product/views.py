@@ -1,27 +1,8 @@
-from rest_framework import viewsets
-from rest_framework import filters
-from rest_framework.authentication import TokenAuthentication
+from django.http import HttpResponse
+from django.template import loader
 
-from .models import Product
-from .models import ProductSku
-from .serializers import ProductSkuSerializer
-from .serializers import ProductSerializer
+from django.shortcuts import render
 
-
-
-class ProductViewSet(viewsets.ModelViewSet):
-    """Viewset for Products"""
-    serializer_class = ProductSerializer
-    queryset = Product.objects.all()
-    authentication_classes = (TokenAuthentication,)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('item_name',)
-
-class ProductSkuViewSet(viewsets.ModelViewSet):
-    """Viewset for SKU Products"""
-    serializer_class = ProductSkuSerializer
-    queryset = ProductSku.objects.all()
-    authentication_classes = (TokenAuthentication,)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('item_name',)
+def index(request):
+    return render(request, "index.html")
 

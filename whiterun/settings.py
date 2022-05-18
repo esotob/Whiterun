@@ -60,7 +60,7 @@ ROOT_URLCONF = 'whiterun.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['product/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
