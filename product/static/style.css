@@ -4,3 +4,12 @@
     font-size: 20pt;
     color: white;
 }
+
+.input-group-text {
+    min-width: 83pt;
+}
+
+.invalid-alert { 
+    color: red;
+    font-size: 10pt;
+}
