@@ -8,17 +8,34 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         {% load static %}
         <link rel="stylesheet" href="{% static 'style.css' %}" >
 
     </head>
     <body>
+        <!-- Header -->
         <div class="row upper-header">
-            <div class="col-12">
+            <div class="col-6 padd-2">
+                <i class="fa-solid fa-box"></i>
                 Products
+            </div>
+            <div class="col-6 padd-2">
+                <div class="row">
+                    <div class="col-10">
+                        <div class="input-group rounded">
+                            <input type="search" class="form-control rounded" id="input_search" placeholder="Search by name" aria-label="Search" aria-describedby="search" />
+                            <span class="input-group-text sm-group border-0" id="search">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         </br>
+
+        <!-- Product table -->
         <div class="row product-table">
             <div class="col-12">
                 <table class="table table-striped table-hover">
@@ -30,33 +47,11 @@
                         <th scope="col">Price</th>
                         <th scope="col">Cost</th>
                         <th scope="col">Is virtual</th>
+                        <th scope="col">Show Skus</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Shirt</td>
-                        <td>Shirt drop shoulder </td>
-                        <td>150</td>
-                        <td>75</td>
-                        <td>Yes</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Pants</td>
-                        <td>Just a cool maybe green pants</td>
-                        <td>300</td>
-                        <td>200</td>
-                        <td>Yes</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Shoes</td>
-                        <td>No cap just flames</td>
-                        <td>500</td>
-                        <td>400</td>
-                        <td>Yes</td>
-                    </tr>
+                    <tbody id="product-table">
+                    
                     </tbody>
                 </table>
             </div>
@@ -67,6 +62,8 @@
             </div>
         </div>
         </br>
+
+        <!-- Inputs for adding a new product -->
         <div class="container add-new d-none">
             <div class="row">
                 <div class="col-md-12">
@@ -128,7 +125,7 @@
                 <div class="col-md-12">
                     <div class="form-check">
                         <input class="form-check-input" id="is_virtual" type="checkbox">
-                        <label class="form-check-label" for="Is virtual">
+                        <label class="form-check-label" for="Is_virtual">
                             Is virtual
                         </label>
                     </div>
@@ -144,9 +141,147 @@
                     <button class="btn btn-success create"> Create </button>
                 </div>
             </div>
+        </div>        
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Adding new sku to</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container add-sku">
+                        <div class="row">
+                            <h3>Add new sku for a product</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group mb-3">
+                                    <label for="product_name" class="form-label"></label>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="input5">Product Name</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="product_name" placeholder="Product name to link with the new sku" aria-label="Product name" aria-describedby="input5" required disabled>
+                                    <input style="display:none" type="text" class="form-control" id="product_id" aria-label="Product id" aria-describedby="input15" required >
+                                </div>
+                                <div id="invalid-text5" class="col-sm-3 invalid-alert d-none">
+                                    Text for something wrong
+                                </div>
+                                </br>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="input6">Barcode</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="barcode" placeholder="Barcode of the sku" aria-label="Barcode" aria-describedby="input6">
+                                </div>
+                                <div id="invalid-text6" class="col-sm-3 invalid-alert d-none">
+                                    Text for something wrong
+                                </div>
+                                </br>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="input7">Sku Code</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="sku_code" placeholder="Code of the sku" aria-label="Sku code" aria-describedby="input7">
+                                </div>
+                                <div id="invalid-text7" class="col-sm-3 invalid-alert d-none">
+                                    Text for something wrong
+                                </div>
+                                </br>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="input8">Sku price</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="sku_price" placeholder="Price of the sku" aria-label="Sku price" aria-describedby="input8">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text sm-group dolar" id="input8">$</span>
+                                    </div>
+                                </div>
+                                <div id="invalid-text8" class="col-sm-3 invalid-alert d-none">
+                                    Text for something wrong
+                                </div>
+                                </br>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="input9">Color code</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="color_code" placeholder="Color code of the sku (3)" aria-label="Color" aria-describedby="input9">
+                                </div>
+                                <div id="invalid-text9" class="col-sm-3 invalid-alert d-none">
+                                    Text for something wrong
+                                </div>
+                                </br>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="input10">Color Description</span>
+                                    </div>
+                                    <input type="text" class="form-control" id="color_desc" placeholder="Color description" aria-label="Color description" aria-describedby="input10">
+                                </div>
+                                <div id="invalid-text10" class="col-sm-3 invalid-alert d-none">
+                                    Text for something wrong
+                                </div>
+                                </br>
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="size_code">Sku size</label>
+                                </div>
+                                <select class="custom-select" id="size_code">
+                                    <option value="texto" selected>Choose the size of the new sku...</option>
+                                    <option value="XS">XS - Extra Small</option>
+                                    <option value="S">S - Small</option>
+                                    <option value="M">M - Medium</option>
+                                    <option value="L">L - Large</option>
+                                    <option value="XL">XL - Extra Large</option>
+                                    <option value="XXL">XXL - Extra extra Large</option>
+                                </select>
+                                <div id="invalid-text11" class="col-sm-3 invalid-alert d-none">
+                                    Text for something wrong
+                                </div>
+                                </br>
+                            </div>
+                            <div class="col-md-12">
+                                </br>
+                                <div class="form-check">
+                                    <input class="form-check-input" id="backordereable" type="checkbox">
+                                    <label class="form-check-label" for="backordereable">
+                                        Backordereable
+                                    </label>
+                                </div>
+                            </br>
+                            </div>
+                        </br>
+                        </br>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger close">Cancel</button>
+                    <button id="create_sku" class="btn btn-success">Create</button>
+                </div>
+                </div>
+            </div>
         </div>
         
         <script type="text/javascript">
+
+            $(".close").click(function(){
+                $('#exampleModal').modal('hide');
+            });
+
+            //Buttons actions
             $(".add").click(function(){
                 $(".add-new").removeClass("d-none");
                 $(".product-table").addClass("d-none");
@@ -170,6 +305,7 @@
                 $("#cost").removeClass("is-invalid");
                 $("#invalid-text4").addClass("d-none");
 
+                //Product validations and assignation
                 name = $("#name").val();
                 if (name == undefined || name == ""){
                     $("#name").addClass("is-invalid");
@@ -216,18 +352,21 @@
 
                 is_virtual = $("#is_virtual").prop("checked");
 
-                params = {
-                        "item_name": name,
-                        "item_description": desc,
-                        "item_price": price,
-                        "item_cost": cost,
-                        "item_pic": picture,
-                        "is_virtual": is_virtual
-                        }
+                //JSON
+                product_params = {
+                    "item_name": name,
+                    "item_description": desc,
+                    "item_price": price,
+                    "item_cost": cost,
+                    "item_pic": picture,
+                    "is_virtual": is_virtual
+                    }
+
+                //Ajax call
                 $.ajax({
                     type: "POST",
                     url: "/api/product/",
-                    data: params,
+                    data: product_params,
                     dataType: "json",
                     success: function(res) {
                         alert("Yep");
@@ -238,7 +377,261 @@
                         alert(res.responseText);
                     }
                 })
+
             });
+
+            $("#create_sku").click(function(){
+                $("#product_name").removeClass("is-invalid");
+                $("#invalid-text5").addClass("d-none");
+                $("#barcode").removeClass("is-invalid");
+                $("#invalid-text6").addClass("d-none");
+                $("#sku_code").removeClass("is-invalid");
+                $("#invalid-text7").addClass("d-none");
+                $("#sku_price").removeClass("is-invalid");
+                $("#invalid-text8").addClass("d-none");
+                $("#color_code").removeClass("is-invalid");
+                $("#invalid-text9").addClass("d-none");
+                $("#color_desc").removeClass("is-invalid");
+                $("#invalid-text10").addClass("d-none");
+                $("#size_code").removeClass("is-invalid");
+                $("#invalid-text11").addClass("d-none");
+
+                //Product validations and assignation
+                product_name = $("#product_name").val();
+                if (product_name == undefined || product_name == ""){
+                    $("#product_name").addClass("is-invalid");
+                    $("#invalid-text5").html("This field may not be blank.");
+                    $("#invalid-text5").removeClass("d-none");
+                    return false;
+                }
+
+                barcode = $("#barcode").val();
+                if (barcode == undefined || barcode == ""){
+                    $("#barcode").addClass("is-invalid");
+                    $("#invalid-text6").html("This field may not be blank.");
+                    $("#invalid-text6").removeClass("d-none");
+                    return false;
+                } else if (!$.isNumeric(barcode)){
+                    $("#barcode").addClass("is-invalid");
+                    $("#invalid-text6").html("A valid number is required.");
+                    $("#invalid-text6").removeClass("d-none");
+                    return false;
+                } else if ($("#barcode").val().length > 10){
+                    $("#barcode").addClass("is-invalid");
+                    $("#invalid-text6").html("Ensure this field has no more than 10 characters.");
+                    $("#invalid-text6").removeClass("d-none");
+                    return false;
+                }
+
+                sku_code = $("#sku_code").val();
+                if (sku_code == undefined || sku_code == ""){
+                    $("#sku_code").addClass("is-invalid");
+                    $("#invalid-text7").html("This field may not be blank.");
+                    $("#invalid-text7").removeClass("d-none");
+                    return false;
+                } else if (!$.isNumeric(sku_code)){
+                    $("#sku_code").addClass("is-invalid");
+                    $("#invalid-text7").html("A valid number is required.");
+                    $("#invalid-text7").removeClass("d-none");
+                    return false;
+                } else if ($("#sku_code").val().length > 20){
+                    $("#sku_code").addClass("is-invalid");
+                    $("#invalid-text7").html("Ensure this field has no more than 20 characters.");
+                    $("#invalid-text7").removeClass("d-none");
+                    return false;
+                }
+
+                sku_price = $("#sku_price").val();
+                if (sku_price == undefined || sku_price == ""){
+                    $("#sku_price").addClass("is-invalid");
+                    $("#invalid-text8").html("This field may not be blank.");
+                    $("#invalid-text8").removeClass("d-none");
+                    return false;
+                } else if (!$.isNumeric(sku_price)){
+                    $("#sku_price").addClass("is-invalid");
+                    $("#invalid-text8").html("A valid number is required.");
+                    $("#invalid-text8").removeClass("d-none");
+                    return false;
+                }
+
+                color_code = $("#color_code").val();
+                if (color_code == undefined || color_code == ""){
+                    $("#color_code").addClass("is-invalid");
+                    $("#invalid-text9").html("This field may not be blank.");
+                    $("#invalid-text9").removeClass("d-none");
+                    return false;
+                } else if ($("#color_code").val().length > 3){
+                    $("#color_code").addClass("is-invalid");
+                    $("#invalid-text9").html("Ensure this field has no more than 3 characters.");
+                    $("#invalid-text9").removeClass("d-none");
+                    return false;
+                }
+
+                color_code_desc = $("#color_desc").val();
+                if (color_code_desc == undefined || color_code_desc == ""){
+                    $("#color_code_desc").addClass("is-invalid");
+                    $("#invalid-text10").html("This field may not be blank.");
+                    $("#invalid-text10").removeClass("d-none");
+                    return false;
+                }
+
+                size_code = $("#size_code option:selected").val();
+                if (size_code == undefined || size_code == "" || $("#size_code option:selected").val().length > 3){
+                    $("#size_code").addClass("is-invalid");
+                    $("#invalid-text11").html("This field may not be blank.");
+                    $("#invalid-text11").removeClass("d-none");
+                    return false;
+                }
+
+                backordereable = $("#backordereable").prop("checked");
+
+                //JSON
+                sku_params = {
+                    "barcode": barcode,
+                    "sku_code": sku_code,
+                    "sku_price": sku_price,
+                    "size_code": size_code,
+                    "item_name": product_name,
+                    "color_code": color_code,
+                    "color_code_desc": color_code_desc,
+                    "backordereable": backordereable
+                    }
+
+                //Ajax call
+                $.ajax({
+                    type: "POST",
+                    url: "/api/product-sku/",
+                    data: sku_params,
+                    dataType: "json",
+                    success: function(res) {
+                        alert("Yep");
+                        var temp_id = $("#product_id").val();
+                        $("#sku-button" + temp_id).prop( "disabled", false );
+                        var new_sku = "";
+                        new_sku += "<tr>"; 
+                        new_sku += "<th scope='row'>" + res.id + "</th>"; 
+                        new_sku += "<td>" + res.barcode + "</td>"; 
+                        new_sku += "<td>" + res.sku_code + "</td>";
+                        new_sku += "<td>" + res.sku_price + "</td>";
+                        new_sku += "<td>" + res.color_code + "</td>";
+                        new_sku += "<td>" + res.color_code_desc + "</td>";
+                        new_sku += "<td>" + res.size_code + "</td>";
+                        new_sku += "<td>" + res.backordereable + "</td>";
+                        new_sku += "</tr>";
+                        $("#sku_body" + temp_id).append(new_sku);
+                        $("#sku-table"+ temp_id).show(500);
+                        $("#sku-button"+ temp_id).html("Hide")
+                    },
+                    error: function(res) {
+                        alert("nop");
+                        alert(res.responseText);
+                    }
+                })
+            });
+
+            $( document ).ready(function() {
+                $("#search").click();
+            });
+
+            $("#search").click(function(){
+                var innerHTML = "";
+
+                $.ajax({
+                    url: "/api/product?search=" + $("#input_search").val(),
+                    success: function(res){
+                        res.forEach(function(r){
+                            console.log(r);
+                            //item table
+                            innerHTML += "<tr>"; 
+                            innerHTML += "<th scope='row'>" + r.id + "</th>"; 
+                            innerHTML += "<td id='product-name" + r.id + "'>" + r.item_name + "</td>"; 
+                            innerHTML += "<td>" + r.item_description + "</td>";
+                            innerHTML += "<td>" + r.item_price + "</td>";
+                            innerHTML += "<td>" + r.item_cost + "</td>";
+                            innerHTML += "<td>" + r.is_virtual + "</td>";
+                            innerHTML += "<td>";
+                            if (r.skus != ("")){
+                                innerHTML += "<button id='sku-button" + r.id + "' class='btn btn-primary btn-sm btn-skus'> Show </button>  ";
+                            } else {
+                                innerHTML += "<button id='sku-button" + r.id + "' class='btn btn-primary btn-sm btn-skus' disabled> Show </button>  ";
+                            }
+                            innerHTML += "<button id='add-sku-button" + r.id + "' class='btn btn-info btn-sm btn-add-sku'> <i class='fa fa-plus'></i> </button> </td>";
+                            innerHTML += "</tr>";
+                            
+                            //foreach skus
+                            
+                            //sku table
+                            innerHTML += "<tr><td id='sku-table" + r.id + "' colspan=7 style='display:none'>";
+                            innerHTML += "<table id='sku-table' class='table table-striped table-hover'>";
+                            innerHTML += "<thead class='thead-dark'>";
+                            innerHTML += "<tr>";
+                            innerHTML += "<th scope='col'>#</th>";
+                            innerHTML += "<th scope='col'>Barcode</th>";
+                            innerHTML += "<th scope='col'>Sku code</th>";
+                            innerHTML += "<th scope='col'>Sku price</th>";
+                            innerHTML += "<th scope='col'>Color code</th>";
+                            innerHTML += "<th scope='col'>Color description</th>";
+                            innerHTML += "<th scope='col'>Sku size</th>";
+                            innerHTML += "<th scope='col'>Backordereable</th>";
+                            innerHTML += "</tr>";
+                            innerHTML += "</thead>";
+                            innerHTML += "<tbody id='sku_body" + r.id + "'>";
+                            if (r.skus != ("")){
+                                r.skus.forEach(function(s){
+                                    console.log(s);
+
+                                    innerHTML += "<tr>"; 
+                                    innerHTML += "<th scope='row'>" + s.id + "</th>"; 
+                                    innerHTML += "<td>" + s.barcode + "</td>"; 
+                                    innerHTML += "<td>" + s.sku_code + "</td>";
+                                    innerHTML += "<td>" + s.sku_price + "</td>";
+                                    innerHTML += "<td>" + s.color_code + "</td>";
+                                    innerHTML += "<td>" + s.color_code_desc + "</td>";
+                                    innerHTML += "<td>" + s.size_code + "</td>";
+                                    innerHTML += "<td>" + s.backordereable + "</td>";
+                                    innerHTML += "</tr>";
+                                });
+                            };
+                            innerHTML += "</tbody>";
+                            innerHTML +=  "</table>";
+                            innerHTML += "</td></tr>";
+                            
+                        });
+                        $("#product-table").html(innerHTML);
+
+                        $(".btn-skus").click(function(){
+                            var id = this.id.substr(10);
+                            if ($("#sku-button"+ id).html() == " Show "){
+                                $("#sku-table"+ id).show(500);
+                                $("#sku-button"+ id).html("Hide");
+                            }else {
+                                $("#sku-table"+ id).hide(500);
+                                $("#sku-button"+ id).html(" Show ");
+                            }
+                        });
+
+                        $(".btn-add-sku").click(function(){
+                            var id = this.id.substr(14);
+                            $("#product_id").val(id);
+                            $("#exampleModal").modal("show");
+                            $("#product_name").val($("#product-name"+id).text());
+                            $("#barcode").val("");
+                            $("#sku_code").val("");
+                            $("#sku_price").val("");
+                            $("#color_code").val("");
+                            $("#color_desc").val("");
+                            $("#size_code").val("texto");
+                            $("#backordereable").prop('checked', false);
+
+                        });
+                    },
+                    error: function(res) {
+                        alert("nop");
+                        alert(res);
+                    }
+                })  
+            });
+
         </script>
     </body>
 </html>

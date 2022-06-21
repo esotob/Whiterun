@@ -6,10 +6,27 @@
 }
 
 .input-group-text {
-    min-width: 83pt;
+    min-width: 110pt;
+    text-align: center;
+}
+
+.custom-select{
+    min-width: 67%;
 }
 
 .invalid-alert { 
     color: red;
     font-size: 10pt;
+}
+
+.dolar {
+    min-width: 10;
+}
+
+.sm-group{
+    min-width: 30px !important;
+}
+
+.padd-2{
+    padding: 5pt 0;
 }
