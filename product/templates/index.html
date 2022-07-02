@@ -4,11 +4,7 @@
         <meta charset="UTF-8">
         <title> Index </title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         {% load static %}
         <link rel="stylesheet" href="{% static 'style.css' %}" >
 
@@ -16,9 +12,11 @@
     <body>
         <!-- Header -->
         <div class="row upper-header">
-            <div class="col-6 padd-2">
+            <div id="product-header" class="col-6 padd-2">
                 <i class="fa-solid fa-box"></i>
                 Products
+                <!-- Dinamic current page value display none  -->
+                <input style="display:none" id="current-page" value=1>
             </div>
             <div class="col-6 padd-2">
                 <div class="row">
@@ -34,7 +32,19 @@
             </div>
         </div>
         </br>
-
+        <!-- TOASTERS -->
+        <div aria-live="polite" aria-atomic="true" style="position: relative;">
+            <div id="toast-all" class="toast toast-ok" style="position: absolute; top: 0; right: 0; z-index:99;">
+                <div class="toast-header">
+                    <i id="toast-icon" class="fa fa-check toaster-green"></i>
+                    <strong class="mr-auto" style="width:70%">&nbsp; &nbsp; Whiterun</strong>
+                    <small style="width:20%">1 sec ago</small>
+                </div>
+                <div class="toast-body">
+                    product created
+                </div>
+            </div>
+        </div>
         <!-- Product table -->
         <div class="row product-table">
             <div class="col-12">
@@ -59,6 +69,10 @@
         <div class="row justify-content-end">
             <div class="col-md-3">
             <button class="btn btn-danger add"> Add new product </button>
+            </div>
+        </div>
+        <div class="row">
+            <div id="paginator"class="col-12">
             </div>
         </div>
         </br>
@@ -98,7 +112,7 @@
                         </div>
                         <input type="text" class="form-control" id="price" placeholder="Sell price of the product" aria-label="Price" aria-describedby="input3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="input3">$</span>
+                            <span class="input-group-text sm-group" id="input3">$</span>
                         </div>
                         
                     </div>
@@ -114,7 +128,7 @@
                         </div>
                         <input type="text" class="form-control" id="cost" placeholder="Buy price of the product" aria-label="Price" aria-describedby="input4">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="input4">$</span>
+                            <span class="input-group-text sm-group" id="input4">$</span>
                         </div>
                     </div>
                     <div id="invalid-text4" class="col-sm-3 invalid-alert d-none">
@@ -141,12 +155,14 @@
                     <button class="btn btn-success create"> Create </button>
                 </div>
             </div>
-        </div>        
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        </div>  
+        
+        <!-- Modal for sku inputs -->
+        <div class="modal fade" id="sku_modal" tabindex="-1" role="dialog" aria-labelledby="sku_modalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Adding new sku to</h5>
+                    <h5 class="modal-title" id="sku_modalLabel">Adding new sku to</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -274,364 +290,12 @@
                 </div>
             </div>
         </div>
-        
-        <script type="text/javascript">
-
-            $(".close").click(function(){
-                $('#exampleModal').modal('hide');
-            });
-
-            //Buttons actions
-            $(".add").click(function(){
-                $(".add-new").removeClass("d-none");
-                $(".product-table").addClass("d-none");
-                $(".add").addClass("d-none");
-                
-            });
-
-            $(".cancel").click(function(){
-                $(".add-new").addClass("d-none");
-                $(".product-table").removeClass("d-none");
-                $(".add").removeClass("d-none");
-            });
-
-            $(".create").click(function(){
-                $("#name").removeClass("is-invalid");
-                $("#invalid-text1").addClass("d-none");
-                $("#desc").removeClass("is-invalid");
-                $("#invalid-text2").addClass("d-none");
-                $("#price").removeClass("is-invalid");
-                $("#invalid-text3").addClass("d-none");
-                $("#cost").removeClass("is-invalid");
-                $("#invalid-text4").addClass("d-none");
-
-                //Product validations and assignation
-                name = $("#name").val();
-                if (name == undefined || name == ""){
-                    $("#name").addClass("is-invalid");
-                    $("#invalid-text1").html("This field may not be blank.");
-                    $("#invalid-text1").removeClass("d-none");
-                    return false;
-                }
-
-                desc = $("#desc").val();
-                if (desc == undefined || desc == ""){
-                    $("#desc").addClass("is-invalid");
-                    $("#invalid-text2").html("This field may not be blank.");
-                    $("#invalid-text2").removeClass("d-none");
-                    return false;
-                }
-
-                price = $("#price").val();
-                if (price == undefined || price == ""){
-                    $("#price").addClass("is-invalid");
-                    $("#invalid-text3").html("This field may not be blank.");
-                    $("#invalid-text3").removeClass("d-none");
-                    return false;
-                } else if (!$.isNumeric(price)){
-                    $("#price").addClass("is-invalid");
-                    $("#invalid-text3").html("A valid number is required.");
-                    $("#invalid-text3").removeClass("d-none");
-                    return false;
-                }
-
-                cost = $("#cost").val();
-                if (cost == undefined || cost == 0){
-                    $("#cost").addClass("is-invalid");
-                    $("#invalid-text4").html("This field may not be blank.");
-                    $("#invalid-text4").removeClass("d-none");
-                    return false;
-                } else if (!$.isNumeric(cost)){
-                    $("#cost").addClass("is-invalid");
-                    $("#invalid-text4").html("A valid number is required.");
-                    $("#invalid-text4").removeClass("d-none");
-                    return false;
-                }
-
-                picture = "...";
-
-                is_virtual = $("#is_virtual").prop("checked");
-
-                //JSON
-                product_params = {
-                    "item_name": name,
-                    "item_description": desc,
-                    "item_price": price,
-                    "item_cost": cost,
-                    "item_pic": picture,
-                    "is_virtual": is_virtual
-                    }
-
-                //Ajax call
-                $.ajax({
-                    type: "POST",
-                    url: "/api/product/",
-                    data: product_params,
-                    dataType: "json",
-                    success: function(res) {
-                        alert("Yep");
-                        alert(res.responseText);
-                    },
-                    error: function(res) {
-                        alert("nop");
-                        alert(res.responseText);
-                    }
-                })
-
-            });
-
-            $("#create_sku").click(function(){
-                $("#product_name").removeClass("is-invalid");
-                $("#invalid-text5").addClass("d-none");
-                $("#barcode").removeClass("is-invalid");
-                $("#invalid-text6").addClass("d-none");
-                $("#sku_code").removeClass("is-invalid");
-                $("#invalid-text7").addClass("d-none");
-                $("#sku_price").removeClass("is-invalid");
-                $("#invalid-text8").addClass("d-none");
-                $("#color_code").removeClass("is-invalid");
-                $("#invalid-text9").addClass("d-none");
-                $("#color_desc").removeClass("is-invalid");
-                $("#invalid-text10").addClass("d-none");
-                $("#size_code").removeClass("is-invalid");
-                $("#invalid-text11").addClass("d-none");
-
-                //Product validations and assignation
-                product_name = $("#product_name").val();
-                if (product_name == undefined || product_name == ""){
-                    $("#product_name").addClass("is-invalid");
-                    $("#invalid-text5").html("This field may not be blank.");
-                    $("#invalid-text5").removeClass("d-none");
-                    return false;
-                }
-
-                barcode = $("#barcode").val();
-                if (barcode == undefined || barcode == ""){
-                    $("#barcode").addClass("is-invalid");
-                    $("#invalid-text6").html("This field may not be blank.");
-                    $("#invalid-text6").removeClass("d-none");
-                    return false;
-                } else if (!$.isNumeric(barcode)){
-                    $("#barcode").addClass("is-invalid");
-                    $("#invalid-text6").html("A valid number is required.");
-                    $("#invalid-text6").removeClass("d-none");
-                    return false;
-                } else if ($("#barcode").val().length > 10){
-                    $("#barcode").addClass("is-invalid");
-                    $("#invalid-text6").html("Ensure this field has no more than 10 characters.");
-                    $("#invalid-text6").removeClass("d-none");
-                    return false;
-                }
-
-                sku_code = $("#sku_code").val();
-                if (sku_code == undefined || sku_code == ""){
-                    $("#sku_code").addClass("is-invalid");
-                    $("#invalid-text7").html("This field may not be blank.");
-                    $("#invalid-text7").removeClass("d-none");
-                    return false;
-                } else if (!$.isNumeric(sku_code)){
-                    $("#sku_code").addClass("is-invalid");
-                    $("#invalid-text7").html("A valid number is required.");
-                    $("#invalid-text7").removeClass("d-none");
-                    return false;
-                } else if ($("#sku_code").val().length > 20){
-                    $("#sku_code").addClass("is-invalid");
-                    $("#invalid-text7").html("Ensure this field has no more than 20 characters.");
-                    $("#invalid-text7").removeClass("d-none");
-                    return false;
-                }
-
-                sku_price = $("#sku_price").val();
-                if (sku_price == undefined || sku_price == ""){
-                    $("#sku_price").addClass("is-invalid");
-                    $("#invalid-text8").html("This field may not be blank.");
-                    $("#invalid-text8").removeClass("d-none");
-                    return false;
-                } else if (!$.isNumeric(sku_price)){
-                    $("#sku_price").addClass("is-invalid");
-                    $("#invalid-text8").html("A valid number is required.");
-                    $("#invalid-text8").removeClass("d-none");
-                    return false;
-                }
-
-                color_code = $("#color_code").val();
-                if (color_code == undefined || color_code == ""){
-                    $("#color_code").addClass("is-invalid");
-                    $("#invalid-text9").html("This field may not be blank.");
-                    $("#invalid-text9").removeClass("d-none");
-                    return false;
-                } else if ($("#color_code").val().length > 3){
-                    $("#color_code").addClass("is-invalid");
-                    $("#invalid-text9").html("Ensure this field has no more than 3 characters.");
-                    $("#invalid-text9").removeClass("d-none");
-                    return false;
-                }
-
-                color_code_desc = $("#color_desc").val();
-                if (color_code_desc == undefined || color_code_desc == ""){
-                    $("#color_code_desc").addClass("is-invalid");
-                    $("#invalid-text10").html("This field may not be blank.");
-                    $("#invalid-text10").removeClass("d-none");
-                    return false;
-                }
-
-                size_code = $("#size_code option:selected").val();
-                if (size_code == undefined || size_code == "" || $("#size_code option:selected").val().length > 3){
-                    $("#size_code").addClass("is-invalid");
-                    $("#invalid-text11").html("This field may not be blank.");
-                    $("#invalid-text11").removeClass("d-none");
-                    return false;
-                }
-
-                backordereable = $("#backordereable").prop("checked");
-
-                //JSON
-                sku_params = {
-                    "barcode": barcode,
-                    "sku_code": sku_code,
-                    "sku_price": sku_price,
-                    "size_code": size_code,
-                    "item_name": product_name,
-                    "color_code": color_code,
-                    "color_code_desc": color_code_desc,
-                    "backordereable": backordereable
-                    }
-
-                //Ajax call
-                $.ajax({
-                    type: "POST",
-                    url: "/api/product-sku/",
-                    data: sku_params,
-                    dataType: "json",
-                    success: function(res) {
-                        alert("Yep");
-                        var temp_id = $("#product_id").val();
-                        $("#sku-button" + temp_id).prop( "disabled", false );
-                        var new_sku = "";
-                        new_sku += "<tr>"; 
-                        new_sku += "<th scope='row'>" + res.id + "</th>"; 
-                        new_sku += "<td>" + res.barcode + "</td>"; 
-                        new_sku += "<td>" + res.sku_code + "</td>";
-                        new_sku += "<td>" + res.sku_price + "</td>";
-                        new_sku += "<td>" + res.color_code + "</td>";
-                        new_sku += "<td>" + res.color_code_desc + "</td>";
-                        new_sku += "<td>" + res.size_code + "</td>";
-                        new_sku += "<td>" + res.backordereable + "</td>";
-                        new_sku += "</tr>";
-                        $("#sku_body" + temp_id).append(new_sku);
-                        $("#sku-table"+ temp_id).show(500);
-                        $("#sku-button"+ temp_id).html("Hide")
-                    },
-                    error: function(res) {
-                        alert("nop");
-                        alert(res.responseText);
-                    }
-                })
-            });
-
-            $( document ).ready(function() {
-                $("#search").click();
-            });
-
-            $("#search").click(function(){
-                var innerHTML = "";
-
-                $.ajax({
-                    url: "/api/product?search=" + $("#input_search").val(),
-                    success: function(res){
-                        res.forEach(function(r){
-                            console.log(r);
-                            //item table
-                            innerHTML += "<tr>"; 
-                            innerHTML += "<th scope='row'>" + r.id + "</th>"; 
-                            innerHTML += "<td id='product-name" + r.id + "'>" + r.item_name + "</td>"; 
-                            innerHTML += "<td>" + r.item_description + "</td>";
-                            innerHTML += "<td>" + r.item_price + "</td>";
-                            innerHTML += "<td>" + r.item_cost + "</td>";
-                            innerHTML += "<td>" + r.is_virtual + "</td>";
-                            innerHTML += "<td>";
-                            if (r.skus != ("")){
-                                innerHTML += "<button id='sku-button" + r.id + "' class='btn btn-primary btn-sm btn-skus'> Show </button>  ";
-                            } else {
-                                innerHTML += "<button id='sku-button" + r.id + "' class='btn btn-primary btn-sm btn-skus' disabled> Show </button>  ";
-                            }
-                            innerHTML += "<button id='add-sku-button" + r.id + "' class='btn btn-info btn-sm btn-add-sku'> <i class='fa fa-plus'></i> </button> </td>";
-                            innerHTML += "</tr>";
-                            
-                            //foreach skus
-                            
-                            //sku table
-                            innerHTML += "<tr><td id='sku-table" + r.id + "' colspan=7 style='display:none'>";
-                            innerHTML += "<table id='sku-table' class='table table-striped table-hover'>";
-                            innerHTML += "<thead class='thead-dark'>";
-                            innerHTML += "<tr>";
-                            innerHTML += "<th scope='col'>#</th>";
-                            innerHTML += "<th scope='col'>Barcode</th>";
-                            innerHTML += "<th scope='col'>Sku code</th>";
-                            innerHTML += "<th scope='col'>Sku price</th>";
-                            innerHTML += "<th scope='col'>Color code</th>";
-                            innerHTML += "<th scope='col'>Color description</th>";
-                            innerHTML += "<th scope='col'>Sku size</th>";
-                            innerHTML += "<th scope='col'>Backordereable</th>";
-                            innerHTML += "</tr>";
-                            innerHTML += "</thead>";
-                            innerHTML += "<tbody id='sku_body" + r.id + "'>";
-                            if (r.skus != ("")){
-                                r.skus.forEach(function(s){
-                                    console.log(s);
-
-                                    innerHTML += "<tr>"; 
-                                    innerHTML += "<th scope='row'>" + s.id + "</th>"; 
-                                    innerHTML += "<td>" + s.barcode + "</td>"; 
-                                    innerHTML += "<td>" + s.sku_code + "</td>";
-                                    innerHTML += "<td>" + s.sku_price + "</td>";
-                                    innerHTML += "<td>" + s.color_code + "</td>";
-                                    innerHTML += "<td>" + s.color_code_desc + "</td>";
-                                    innerHTML += "<td>" + s.size_code + "</td>";
-                                    innerHTML += "<td>" + s.backordereable + "</td>";
-                                    innerHTML += "</tr>";
-                                });
-                            };
-                            innerHTML += "</tbody>";
-                            innerHTML +=  "</table>";
-                            innerHTML += "</td></tr>";
-                            
-                        });
-                        $("#product-table").html(innerHTML);
-
-                        $(".btn-skus").click(function(){
-                            var id = this.id.substr(10);
-                            if ($("#sku-button"+ id).html() == " Show "){
-                                $("#sku-table"+ id).show(500);
-                                $("#sku-button"+ id).html("Hide");
-                            }else {
-                                $("#sku-table"+ id).hide(500);
-                                $("#sku-button"+ id).html(" Show ");
-                            }
-                        });
-
-                        $(".btn-add-sku").click(function(){
-                            var id = this.id.substr(14);
-                            $("#product_id").val(id);
-                            $("#exampleModal").modal("show");
-                            $("#product_name").val($("#product-name"+id).text());
-                            $("#barcode").val("");
-                            $("#sku_code").val("");
-                            $("#sku_price").val("");
-                            $("#color_code").val("");
-                            $("#color_desc").val("");
-                            $("#size_code").val("texto");
-                            $("#backordereable").prop('checked', false);
-
-                        });
-                    },
-                    error: function(res) {
-                        alert("nop");
-                        alert(res);
-                    }
-                })  
-            });
-
-        </script>
     </body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static '/product/product.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
 </html>

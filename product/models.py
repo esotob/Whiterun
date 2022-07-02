@@ -3,7 +3,7 @@ from django.core.validators import RegexValidator
 
 class Product(models.Model):
     """Model for the products we are going to have"""
-    item_name = models.CharField(max_length=30)
+    item_name = models.CharField(max_length=30, unique=True)
     item_description = models.TextField()
     item_price = models.FloatField()
     item_cost = models.FloatField()

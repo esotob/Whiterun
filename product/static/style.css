@@ -3,6 +3,8 @@
     text-align: center;
     font-size: 20pt;
     color: white;
+    position:sticky;
+    top: 0px;
 }
 
 .input-group-text {
@@ -29,4 +31,20 @@
 
 .padd-2{
     padding: 5pt 0;
+}
+
+.toaster-green{
+    color:green;
+}
+
+.toaster-red{
+    color:red;
+}
+
+.toast-ok{
+    background-color: lightgreen;
+}
+
+.toast-nok{
+    background-color: rgb(247, 75, 75);
 }

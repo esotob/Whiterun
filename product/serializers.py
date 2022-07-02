@@ -1,6 +1,5 @@
 from ast import Not
 from contextlib import nullcontext
-from itertools import product
 from product import models
 from.models import Product
 from.models import ProductSku
@@ -29,7 +28,15 @@ class ProductSkuSerializer (serializers.Serializer):
         ).first()
 
         if not product:
-            raise serializers.ValidationError("Item {} Not Found".format(item_name))
+            raise serializers.ValidationError("Item '{}' Not Found".format(item_name))
+
+        barcode_repeat = ProductSku.objects.filter(barcode=validated_data.get("barcode")).first()
+        if barcode_repeat is not None:
+            raise serializers.ValidationError("Sku barcode '{}' Already Exists".format(barcode_repeat.barcode))
+
+        sku_code_repeat = ProductSku.objects.filter(sku_code=validated_data.get("sku_code")).first()
+        if sku_code_repeat is not None:
+            raise serializers.ValidationError("Sku code '{}' Already Exists".format(sku_code_repeat.sku_code))
 
         validated_data['product'] = product
         return ProductSku.objects.create(**validated_data)
@@ -58,6 +65,10 @@ class ProductSerializer(serializers.Serializer):
     skus = ProductSkuSerializer(many=True, read_only=True)
 
     def create(self, validated_data):
+        
+        old_product = Product.objects.filter(item_name=validated_data.get("item_name")).first()
+        if old_product is not None:
+            raise serializers.ValidationError("Item '{}' Already Exists".format(old_product.item_name))
         return Product.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
