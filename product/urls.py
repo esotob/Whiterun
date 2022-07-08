@@ -10,7 +10,6 @@ router = DefaultRouter()
 router.register('product', ProductViewSet, basename='product-viewset')
 router.register('product-sku', ProductSkuViewSet, basename='product-sku-viewset')
 
-
 urlpatterns = [
     path('', include(router.urls)),
     ]

@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     "rest_framework.authtoken",
     'phonenumber_field',
-    'product'
+    'product',
+    'inventory'
 ]
 
 MIDDLEWARE = [
@@ -60,7 +61,7 @@ ROOT_URLCONF = 'whiterun.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['product/templates'],
+        'DIRS': ['product/templates', 'inventory/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

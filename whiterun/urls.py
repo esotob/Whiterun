@@ -16,11 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from product import views
+from product import views as product_views
+from inventory import views as inventory_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')), 
     path('api/', include('product.urls')),
-    path('product/', views.index),
+    path('apis/', include('inventory.urls')),
+    path('product/', product_views.index),
+    path('location/', inventory_views.location),
 ]

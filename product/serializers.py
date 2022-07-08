@@ -27,6 +27,8 @@ class ProductSkuSerializer (serializers.Serializer):
             item_name=item_name
         ).first()
 
+        validated_data['product'] = product
+
         if not product:
             raise serializers.ValidationError("Item '{}' Not Found".format(item_name))
 
@@ -37,8 +39,7 @@ class ProductSkuSerializer (serializers.Serializer):
         sku_code_repeat = ProductSku.objects.filter(sku_code=validated_data.get("sku_code")).first()
         if sku_code_repeat is not None:
             raise serializers.ValidationError("Sku code '{}' Already Exists".format(sku_code_repeat.sku_code))
-
-        validated_data['product'] = product
+        
         return ProductSku.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
@@ -69,7 +70,7 @@ class ProductSerializer(serializers.Serializer):
         old_product = Product.objects.filter(item_name=validated_data.get("item_name")).first()
         if old_product is not None:
             raise serializers.ValidationError("Item '{}' Already Exists".format(old_product.item_name))
-        return Product.objects.create(**validated_data)
+        return Product.objects.create(**validated_data)   
 
     def update(self, instance, validated_data):
         instance.item_description = validated_data.get('item_description', instance.item_description)
