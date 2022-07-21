@@ -32,9 +32,9 @@ class LocationSerializer (serializers.Serializer):
 
         validated_data["product_sku"] = product_sku
 
-        print(validated_data)
-
-        
+        coordinate_repeat = Location.objects.filter(coordinate=validated_data.get("coordinate")).first()
+        if coordinate_repeat is not None:
+            raise serializers.ValidationError("The coordinate name {} already exist".format(coordinate_repeat.coordinate))
 
         return Location.objects.create(**validated_data)
 

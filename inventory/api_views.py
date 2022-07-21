@@ -18,3 +18,4 @@ class LocationViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     authentication_classes = (TokenAuthentication,)
     filter_backends = (filters.SearchFilter,)
+    search_fields = ("coordinate",)
